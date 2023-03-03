@@ -7,11 +7,11 @@ Table of Contents
 * [Assumption1](#assumption1)
    * [Existing architecture workflow](#existing-architecture-workflow)
    * [Solution Architecture](#solution-architecture)
-         * [Decision Statement](#decision-statement)
-         * [Decision](#decision)
-         * [Motivation](#motivation)
-         * [Alternatives](#alternatives)
-         * [Implications](#implications)
+     * [Decision Statement](#decision-statement)
+     * [Decision](#decision)
+     * [Motivation](#motivation)
+     * [Alternatives](#alternatives)
+     * [Implications](#implications)
    * [Migrate live data stream workflow.](#migrate-live-data-stream-workflow)
       * [Data Ingest](#data-ingest)
          * [Batch data](#batch-data)
@@ -30,7 +30,7 @@ Table of Contents
          * [Motivation](#motivation-3)
          * [Alternatives](#alternatives-2)
          * [Addon intergration](#addon-intergration)
-            * [Architecture consists of the following](#architecture-consists-of-the-following)
+         * [Architecture consists of the following](#architecture-consists-of-the-following)
       * [Data warehouse](#data-warehouse)
          * [Decision](#decision-4)
          * [Motivation](#motivation-4)
@@ -49,7 +49,7 @@ Table of Contents
    * [Migrate historical data.](#migrate-historical-data)
      * [Decision](#decision-5)
      * [Motivation](#motivation-5)
-     * [Limitations](#limitations)
+       * [Limitations](#limitations)
      * [Assumptions](#assumptions-2)
      * [Data Replication planning](#data-replication-planning)
    * [Migrate gameserver. <em>( Not explained in detail )</em>](#migrate-gameserver--not-explained-in-detail-)
@@ -103,9 +103,10 @@ identify and resolve the problem? What tools do you use? What are the different 
 Batch Data: Could be in form of file (json,csv) or any other log file sent by third party service to video game company. Example number of downloads from loging site, ad agency sending ad streaming reports and payment gateway sending daily transcation details. This data is directly sent to data analytics system for processing unstructured data. 
 
 Transactional Data: Application data stored in RDBMS (relational data) collected from PC and console. Example player login, player has unlocked a trophy following the success on a level, the number of times that a player dies in facing the boss, the movements of the player's character on the map, player purchase coins and other addons. This data is inserted to mysql table which is closely monitored by a process called a message relay. Message relay listens for changes in the outbox table and whenever a change is detected by this process, it publishes this event to a message broker and passed to data analytics system.
-
 ![current setup](./files/transaction-onprem-design.png)
 
+## Assumption2
+[Second Assumption of existing architecture <em>( Not explained in detail )</em>](#second-assumption-of-existing-architecture--not-explained-in-detail-)
 ## Solution Architecture
 
 #### Decision Statement
