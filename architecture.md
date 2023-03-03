@@ -1,4 +1,64 @@
-## Problem context
+Table of Contents
+=================
+
+* [Problem context](#problem-context)
+* [Functions](#functions)
+* [Goals for design review](#goals-for-design-review)
+* [Assumption1](#assumption1)
+   * [Existing architecture workflow](#existing-architecture-workflow)
+   * [Solution Architecture](#solution-architecture)
+         * [Decision Statement](#decision-statement)
+         * [Decision](#decision)
+         * [Motivation](#motivation)
+         * [Alternatives](#alternatives)
+         * [Implications](#implications)
+   * [Migrate live data stream workflow.](#migrate-live-data-stream-workflow)
+      * [Data Ingest](#data-ingest)
+         * [Batch data](#batch-data)
+         * [Decision](#decision-1)
+         * [Motivation](#motivation-1)
+         * [Future case](#future-case)
+         * [Stream data](#stream-data)
+         * [Decision](#decision-2)
+         * [Assumptions](#assumptions)
+         * [Motivation](#motivation-2)
+         * [Future case](#future-case-1)
+         * [Alternatives](#alternatives-1)
+      * [Data Processing](#data-processing)
+         * [Assumptions](#assumptions-1)
+         * [Decision](#decision-3)
+         * [Motivation](#motivation-3)
+         * [Alternatives](#alternatives-2)
+         * [Addon intergration](#addon-intergration)
+            * [Architecture consists of the following](#architecture-consists-of-the-following)
+      * [Data warehouse](#data-warehouse)
+         * [Decision](#decision-4)
+         * [Motivation](#motivation-4)
+         * [Future case](#future-case-2)
+         * [Versioning and Unit testing using dataform](#versioning-and-unit-testing-using-dataform)
+      * [ML and AL platform](#ml-and-al-platform)
+         * [Machine learning operations](#machine-learning-operations)
+         * [Model Versioning](#model-versioning)
+         * [Analytics dashboards](#analytics-dashboards)
+      * [Cloud functions](#cloud-functions)
+      * [CI/CD pipelines](#cicd-pipelines)
+      * [FinOps](#finops)
+         * [Accountability and enablement](#accountability-and-enablement)
+         * [Measurement and Realization Metric](#measurement-and-realization-metric)
+         * [Cost optimization](#cost-optimization)
+   * [Migrate historical data.](#migrate-historical-data)
+     * [Decision](#decision-5)
+     * [Motivation](#motivation-5)
+     * [Limitations](#limitations)
+     * [Assumptions](#assumptions-2)
+     * [Data Replication planning](#data-replication-planning)
+   * [Migrate gameserver. <em>( Not explained in detail )</em>](#migrate-gameserver--not-explained-in-detail-)
+* [Second Assumption of existing architecture <em>( Not explained in detail )</em>](#second-assumption-of-existing-architecture--not-explained-in-detail-)
+   * [Existing architecture workflow](#existing-architecture-workflow-1)
+      * [Decision Statement](#decision-statement-1)
+      * [Design and migration changes](#design-and-migration-changes)
+
+# Problem context
 Suppose we are a video game company that distributes several games on different
 terminals (both PCs and consoles). Each terminal sends daily and in real time multiple
 events related to the current game of a player for each of the games he owns (for
@@ -6,7 +66,7 @@ example the player has unlocked a trophy following the success on a level, the n
 times that a player dies in facing the boss, the movements of the player's character on
 the map, etc.).
 
-## Functions
+# Functions
 * Provide a comprehensive architecture of such a system on Google Cloud Platform
 which covers the entire workflow (data collection and reception, ingestion and storage,
 restitution to Data Analysts and Data Scientists), as well as all the necessary modules
@@ -15,7 +75,7 @@ needed for its maintenance (monitoring, etc ...).
 satisfied)
 * You will need to plan for the transition to new workflow.
 
-## Goals for design review
+# Goals for design review
 * Low latency (low event latency): The data made available to Data Analysts (at least)
 and Scientists (at most) must be as recent as possible, and in the most interactive and
 fast way possible (for Analysts).
@@ -38,8 +98,8 @@ graphs?
 * Incident: A data analyst reports that the data is missing over several days, how do you
 identify and resolve the problem? What tools do you use? What are the different stages?
 
-## Assumption1
-### Existing architecture workflow
+# Assumption1
+## Existing architecture workflow
 Batch Data: Could be in form of file (json,csv) or any other log file sent by third party service to video game company. Example number of downloads from loging site, ad agency sending ad streaming reports and payment gateway sending daily transcation details. This data is directly sent to data analytics system for processing unstructured data. 
 
 Transactional Data: Application data stored in RDBMS (relational data) collected from PC and console. Example player login, player has unlocked a trophy following the success on a level, the number of times that a player dies in facing the boss, the movements of the player's character on the map, player purchase coins and other addons. This data is inserted to mysql table which is closely monitored by a process called a message relay. Message relay listens for changes in the outbox table and whenever a change is detected by this process, it publishes this event to a message broker and passed to data analytics system.
